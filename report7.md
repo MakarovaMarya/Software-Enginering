@@ -202,6 +202,28 @@ print(f"Самое частое слово: '{max_word}' встречается 
 
 ## Задание №2
 ```python
+def main():
+    while True:
+        print("Ввести информацию о расходах - 1")
+        print("Вывести информацию - 2")
+        print("Выйти - 3")
+        choice = input("Выберите действие: ")
+        if choice == "1":
+            category = input("Категория расхода: ")
+            amount = input("Сумма расхода: ")
+            description = input("Описание: ")
+            with open("expenses.txt", "a", encoding="utf-8") as f:
+                f.write(f"{category} | {amount} | {description}\n")
+            print("Расход добавлен!")
+        elif choice == "2":
+            with open("expenses.txt", "r", encoding="utf-8") as f:
+                expenses  = f.read()
+                print(expenses)
+        elif choice == "3":
+            break
+
+if __name__ == "__main__":
+    main()
 ```
 
 # Результат
