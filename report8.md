@@ -19,50 +19,150 @@
 ## Лабораторная работа №1
 ### Допустим, что вы решили оригинально и немного странно познакомится с человеком. Для этого у вас должен быть написан свой класс на Python, который будет проверять угадал ваше имя человек или нет. Для этого создайте класс, указав в свойствах только имя. Дальше создайте функцию __init__(), а в ней сделайте проверку на то угадал человек ваше имя или нет. Также можете проверить что будет, если в этой функции указав атрибут, который не указан в вашем классе, например, попробуйте вызвать фамилию.
 ```python
+class Maria:
+    __slots__ = ['name']
 
+    def __init__(self, name):
+        if name == 'Мария':
+            self.name = f"Да, Я {name}"
+        else:
+            self.name = f"Я не {name}, а Мария"
+
+person1 = Maria('Света')
+person2 = Maria('Мария')
+print(person1.name)
+print(person2.name)
+
+person2.surname = 'Макарова'
 ```
 
 # Результат
+<img width="730" height="886" alt="тема 9 1" src="https://github.com/user-attachments/assets/477f5a65-b1e2-470b-977e-d92404adc35e" />
 
 # Вывод
 
 ## Лабораторная работа №2
 ### Вам дали важное задание, написать продавцу мороженого программу, которая будет писать добавили ли топпинг в мороженое и цену после возможного изменения. Для этого вам нужно написать класс, в котором будет определяться изменили ли состав мороженого или нет. В этом классе реализуйте метод, выводящий на печать «Мороженое с {ТОППИНГ}» в случае наличия добавки, а иначе отобразится следующая фраза: «Обычное мороженое». При этом программа должна воспринимать как топпинг только атрибуты типа string.
 ```python
+class IceCream:
+    def __init__(self, ingredient=None):
+        self.base_price = 59
+        if isinstance(ingredient, str):
+            self.ingredient = ingredient
+            self.price = self.base_price + 39
+        else:
+            self.ingredient = None
+            self.price = self.base_price
 
+    def composition(self):
+        if self.ingredient:
+            print(f"Мороженое с {self.ingredient} - {self.price} руб.")
+        else:
+            print(f"Обычное мороженое - {self.price} руб.")
+
+icecream = IceCream()
+icecream.composition()
+icecream = IceCream('шоколадом')
+icecream.composition()
+icecream = IceCream(2)
+icecream.composition()
 ```
 
 # Результат
+<img width="844" height="1008" alt="тема 9 2" src="https://github.com/user-attachments/assets/988459e2-81da-4be0-a67c-bd791f71c75b" />
 
 # Вывод
 
 ## Лабораторная работа №3
 ### Петя – начинающий программист и на занятиях ему сказали реализовать икапсу…что-то. А вы хороший друг Пети и ко всему прочему прекрасно знаете, что икапсу…что-то – это инкапсуляция, поэтому решаете помочь вашему другу с написанием класса с инкапсуляцией. Ваш класс будет не просто инкапсуляцией, а классом с сеттером, геттером и деструктором. После написания класса вам необходимо продемонстрировать что все написанные вами функции работают. Также вас необходимо объяснить Пете почему на скриншоте ниже в консоли выводится ошибка.
 ```python
+class MyClass:
+    def __init__(self, value):
+        self._value = value
 
+    def set_value(self, value):  # установка значения атрибута
+        self._value = value
+
+    def get_value(self):  # получение значения атрибута
+        return self._value
+
+    def del_value(self):  # удаление атрибута
+        del self._value
+
+    value = property(get_value, set_value, del_value, "Свойство value")
+
+obj = MyClass(42)
+print(obj.get_value())
+obj.set_value(45)
+print(obj.get_value())
+obj.set_value(100)
+print(obj.get_value())
+obj.del_value()
+print(obj.get_value())
+# Ошибка возникает потому, что после вызова obj.del_value() атрибут _value
+# был удален из объекта, и при попытке получить его значение через get_value()
+# происходит обращение к несуществующему атрибуту, что вызывает ошибку AttributeError.
 ```
 
 # Результат
+<img width="1033" height="1041" alt="тема 9 3 " src="https://github.com/user-attachments/assets/3aff1a0f-8e36-4cf6-968b-04b8825e0a4e" />
 
 # Вывод
 
 ## Лабораторная работа №4
 ### Вам прекрасно известно, что кошки и собаки являются млекопитающими, но компьютер этого не понимает, поэтому вам нужно написать три класса: Кошки, Собаки, Млекопитающие. И при помощи “наследования” объяснить компьютеру что кошки и собаки – это млекопитающие. Также добавьте какой-нибудь свой атрибут для кошек и собак, чтобы показать, что они чем-то отличаются друг от друга.
 ```python
+class Mammal:
+    class_name = 'Млекопитающим'
+    feeding_type = 'молоком'
 
+
+class Dog(Mammal):
+    species = 'собака'
+    sounds = 'гав'
+    special_ability = 'искать и приносить предметы'
+
+
+class Cat(Mammal):
+    species = 'кошка'
+    sounds = 'мяу'
+    special_ability = 'видеть в темноте'
+
+dog = Dog()
+cat = Cat()
+
+print(f"Собака относится к {dog.class_name}, издает звук {dog.sounds}, питается {dog.feeding_type}, особое умение - {dog.special_ability}")
+print(f"Кошка относится к {cat.class_name}, издает звук {cat.sounds}, питается {cat.feeding_type}, особое умение - {cat.special_ability}")
 ```
 
 # Результат
+<img width="986" height="985" alt="тема 9 4" src="https://github.com/user-attachments/assets/f8f31093-56c6-4c66-a25b-c08e1e70b3ce" />
 
 # Вывод
 
 ## Лабораторная работа №5
 ### На разных языках здороваются по-разному, но суть остается одинаковой, люди друг с другом здороваются. Давайте вместе с вами реализуем программу с полиморфизмом, которая будет описывать всю суть первого предложения задачи. Для этого мы можем выбрать два языка, например, русский и английский и написать для них отдельные классы, в которых будет в виде атрибута слово, которым здороваются на этих языках. А также напишем функцию, которая будет выводить информацию о том, как на этих языках здороваются. Заметьте, что для решения поставленной задачи мы использовали декоратор @staticmethod, поскольку нам не нужны обязательные параметры-ссылки вроде self.
 ```python
+class Russian:
+    @staticmethod
+    def greeting():
+        return "Привет"
 
+class English:
+    @staticmethod
+    def greeting():
+        return "Hello"
+
+def print_greetings():
+    languages = [(Russian, "русском"), (English, "английском")]
+    for language, lang_name in languages:
+        print(f"На {lang_name} языке говорят: {language.greeting()}")
+
+print_greetings()
 ```
 
 # Результат
+<img width="838" height="768" alt="тема 9 5" src="https://github.com/user-attachments/assets/74bba060-ffbd-4095-aba8-e5241477c0a0" />
 
 # Вывод
 
