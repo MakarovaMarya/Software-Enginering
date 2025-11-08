@@ -102,3 +102,109 @@ def print_greetings():
         print(f"На {lang_name} языке говорят: {language.greeting()}")
 
 print_greetings()
+
+
+
+
+class Tomato:
+    # Статические свойства - стадии созревания помидора
+    states = {0: 'отсутствует', 1: 'цветение', 2: 'зеленый', 3: 'красный'}
+
+    def __init__(self, index):
+        # _index - защищенное свойство (индекс томата)
+        # _state - защищенное свойство (текущая стадия созревания)
+        self._index = index
+        self._state = 0  # Начинаем с первой стадии
+
+    def grow(self):
+        # Переводит томат на следующую стадию созревания
+        if self._state < 3:
+            self._state += 1
+
+    def is_ripe(self):
+        # Проверяет, созрел ли томат (достиг последней стадии)
+        return self._state == 3
+
+
+class TomatoBush:
+    def __init__(self, num_tomatoes):
+        # Создает список томатов
+        self.tomatoes = [Tomato(i) for i in range(1, num_tomatoes + 1)]
+
+    def grow_all(self):
+        # Переводит все томаты на следующую стадию
+        for tomato in self.tomatoes:
+            tomato.grow()
+
+    def all_are_ripe(self):
+        # Проверяет, все ли томаты созрели
+        return all(tomato.is_ripe() for tomato in self.tomatoes)
+
+    def give_away_all(self):
+        # Очищает список томатов после сбора урожая
+        self.tomatoes = []
+
+
+class Gardener:
+    def __init__(self, name, plant):
+        # name - публичное свойство (имя садовника)
+        # _plant - защищенное свойство (объект класса TomatoBush)
+        self.name = name
+        self._plant = plant  # Изменено на _plant
+
+    def work(self):
+        # Садовник работает - растение растет
+        print(f'Садовник {self.name} ухаживает за растениями...')
+        self._plant.grow_all()
+
+    def harvest(self):
+        # Сбор урожая, если все томаты созрели
+        if self._plant.all_are_ripe():
+            print(f'Садовник {self.name} собирает урожай!')
+            self._plant.give_away_all()
+            return True
+        else:
+            print(f'Садовник {self.name}: Томаты еще не созрели!')
+            return False
+
+    @staticmethod
+    def knowledge_base():
+        # Справка по садоводству
+        print('=' * 50)
+        print('СПРАВКА ПО САДОВОДСТВУ:')
+        print('1. Томаты проходят 4 стадии созревания:')
+        for key, value in Tomato.states.items():
+            print(f'   Стадия {key} - {value}')
+        print('2. Садовник должен ухаживать за растениями')
+        print('3. Урожай можно собрать, когда все томаты созреют')
+        print('=' * 50)
+
+
+if __name__ == "__main__":
+    # Вызываем справку по садоводству
+    Gardener.knowledge_base()
+
+    # Создаем объекты классов TomatoBush и Gardener
+    bush = TomatoBush(3)  # Куст с 3 томатами
+    gardener = Gardener("Мария", bush)
+
+    print("\nСадовник начинает работать")
+
+    # Ухаживаем за кустом с помидорами
+    gardener.work()
+
+    # Пробуем собрать урожай (еще не дозрели)
+    print("\nПробуем собрать урожай:")
+    gardener.harvest()
+
+    # Продолжаем ухаживать
+    print("\nПродолжаем ухаживать за помидорами:")
+    gardener.work()
+    gardener.work()
+
+    # Собираем урожай (после полного созревания)
+    print("\nПоследняя попытка собрать урожай:")
+    if gardener.harvest():
+        print("Урожай собран!")
+    else:
+        print("Уроай собрать не получилось")
