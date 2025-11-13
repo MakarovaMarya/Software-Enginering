@@ -227,17 +227,140 @@ if __name__ == '__main__':
 ## Задание №4
 Создайте собственный декоратор, который будет использоваться для двух любых вами придуманных функций. Декораторы, которые использовались ранее в работе нельзя воссоздавать. Результатом выполнения задачи будет: класс декоратора, две как-то связанными с ним функциями, скриншот консоли с выполненной программой и подробные комментарии, которые будут описывать работу вашего кода.
 ```
+class MyDecorator:
+    def __init__(self, operation_name):
+        # Сохраняем название операции для красивого вывода
+        self.operation_name = operation_name
 
+    def __call__(self, func):
+        def wrapper(*args, **kwargs):
+            # Выводим информацию о начале операции и входных данных
+            print(f"-- Начало операции: {self.operation_name}")
+            print(f"   Входные данные: {args}")
+
+            # Вызываем оригинальную функцию и сохраняем результат
+            result = func(*args, **kwargs)
+
+            # Выводим результат выполнения операции
+            print(f"   Результат: {result}")
+            print(f"-- Конец операции: {self.operation_name}")
+            print("-" * 50)  # Разделитель для читаемости
+
+            return result  # Возвращаем результат оригинальной функции
+
+        return wrapper  # Возвращаем обернутую функцию
+
+
+# Первая функция - сложение произвольного количества чисел
+@MyDecorator("Сложение чисел")  # Применяем декоратор с названием операции
+def add_nums(*nums):
+    return sum(nums)
+
+
+# Вторая функция - умножение произвольного количества чисел
+@MyDecorator("Умножение чисел")  # Другой декоратор с другим названием
+def multiply_nums(*nums):
+    result = 1
+    for num in nums:
+        result *= num
+    return result
+
+
+# Тестируем наши функции с декораторами
+if __name__ == '__main__':
+    print("Запуск программы с математическими операциями")
+    print("=" * 50)
+
+    # Тестируем сложение с разным количеством аргументов
+    add_nums(1, 2, 3)  # 1 + 2 + 3 = 6
+    add_nums(10, 20, 30, 40)  # 10 + 20 + 30 + 40 = 100
+    add_nums(5)  # 5 = 5
+    add_nums(2, 4, 6, 8, 10)  # 2 + 4 + 6 + 8 + 10 = 30
+
+    # Тестируем умножение с разным количеством аргументов
+    multiply_nums(2, 3, 4)  # 2 × 3 × 4 = 24
+    multiply_nums(1, 2, 3, 4, 5)  # 1 × 2 × 3 × 4 × 5 = 120
+    multiply_nums(10)  # 10 = 10
+    multiply_nums(2, 5)  # 2 × 5 = 10
+    multiply_nums(3, 3, 3)  # 3 × 3 × 3 = 27
+
+    print("Все операции завершены!")
 ```
 # Результат
+<img width="1385" height="1080" alt="image" src="https://github.com/user-attachments/assets/cb5da2d2-7ac4-4e20-9972-a50d77a991c6" />
+
 # Вывод
+Создали класс-декоратор MyDecorator с методом __call__, который принимает функцию и возвращает обертку wrapper. В обертке выводим информацию о начале операции и входных данных с помощью print(), вызываем оригинальную функцию func() с аргументами *args и **kwargs, сохраняем результат, выводим его и завершаем операцию. Применили декоратор к функциям add_nums() и multiply_nums(), которые используют sum() для сложения и цикл for для умножения чисел. В основной программе протестировали функции с разными наборами аргументов, демонстрируя работу декоратора.
 
 ## Задание №5
 Создайте собственное исключение, которое будет использоваться в двух любых фрагментах кода. Исключения, которые использовались ранее в работе нельзя воссоздавать. Результатом выполнения задачи будет: класс исключения, код к котором в двух местах используется это исключение, скриншот консоли с выполненной программой и подробные комментарии, которые будут описывать работу вашего кода.
 ```
+class InvalidEmailError(Exception):
+    def __init__(self, email, reason=""):
+        self.email = email
+        self.reason = reason
+        super().__init__(f"Некорректный email адрес: '{email}'. Причина: {reason}")
 
+
+class UserRegistration:
+    @staticmethod
+    def validate_email(email):
+        if not email:
+            raise InvalidEmailError(email, "email не может быть пустым")
+        if '@' not in email:
+            raise InvalidEmailError(email, "отсутствует символ @")
+        parts = email.split('@')
+        if len(parts) != 2:
+            raise InvalidEmailError(email, "неправильный формат email")
+        local_part, domain = parts
+        if not local_part:
+            raise InvalidEmailError(email, "локальная часть (до @) не может быть пустой")
+        if not domain:
+            raise InvalidEmailError(email, "доменная часть (после @) не может быть пустой")
+        if '.' not in domain:
+            raise InvalidEmailError(email, "доменная часть должна содержать точку")
+        # Дополнительная проверка на пробелы
+        if ' ' in email:
+            raise InvalidEmailError(email, "email не может содержать пробелы")
+        return True
+
+    def register_user(self, username, email):
+        print(f"Попытка регистрации пользователя: {username}")
+        print(f"   Email: {email}")
+        try:
+            self.validate_email(email)
+            print(f"Пользователь {username} успешно зарегистрирован!")
+            return True
+        except InvalidEmailError as ex:
+            print(f"Ошибка регистрации: {ex}")
+            return False
+
+if __name__ == '__main__':
+    print("Проверка работы исключений InvalidEmailError")
+    # Создаем экземпляры классов
+    registration_system = UserRegistration()
+
+    # Успешные регистрации
+    registration_system.register_user("Иван Иванов", "ivan@example.com")
+    print()
+
+    # Регистрации с ошибками (вызовут наше исключение)
+    registration_system.register_user("Ошибка1", "без-собаки.com")
+    print()
+    registration_system.register_user("Ошибка2", "пробел @example.com")
+    print()
+    registration_system.register_user("Ошибка3", "")
+    print()
+    registration_system.register_user("Ошибка4", "толькодомен@")
+    print()
+
+    print("\nРабота завершена!")
 ```
 # Результат 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2589cf0b-c51c-460a-a08f-83f050b87472" />
+
 # Вывод
+Создали пользовательское исключение InvalidEmailError, которое наследует от Exception и принимает email и причину ошибки. Класс UserRegistration содержит статический метод validate_email(), который с помощью условных проверок и методов split() проверяет корректность email, и метод register_user(), который использует try-except для обработки исключений. В основной программе создали объект registration_system и протестировали различные случаи регистрации, включая успешные и ошибочные, с выводом результатов с помощью print().
 
 # Общий вывод
+В ходе выполнения заданий из данных лабораторной и самостоятельной работ, мы изучили декораторы и исключения и для чего они нужны, а также самостоятельно попрактиковались в их создании для различных случаев. 
