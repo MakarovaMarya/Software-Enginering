@@ -30,26 +30,69 @@ for item in numbers:
 ## Задание №2
 Класс итератор с гибкой настройкой и удобным применением
 ```
-
+class CountDown:
+    def __init__(self, start):
+        self.count = start + 1
+    def __iter__(self):
+        return self
+    def __next__(self):
+        self.count -= 1
+        if self.count < 0:
+            raise StopIteration
+        return self.count
+        
+if __name__ == "__main__":
+    counter = CountDown(5)
+    for i in counter:
+        print(i)
 ```
 # Результат
 # Вывод
 
 ## Задание №3
 Генератор списка
-```python```
+```
+a = [i ** 2 for i in range(1, 5)]
+
+print("a - ", a)
+for i in a:
+    print(i)
+    
+print("iter(a) - ", iter(a))
+for i in a:
+    print(i)
+```
 # Результат
 # Вывод
 
 ## Задание №4
 Выражения генераторы
-```python```
+```
+b = (i ** 2 for i in range(1, 5))
+print(b)
+print("first")
+for i in b:
+    print(i)
+print("second")
+for i in b:
+    print(i)
+```
 # Результат 
 # Вывод
 
 ## Задание №5
 Такой же счетчик, как и в первом задании, только это генератор и использует 
-```python```
+```
+def countdown(count):
+    while count >= 0:
+        yield count
+        count -= 1
+        
+if __name__ == "__main__":
+    counter = countdown(5)
+    for i in counter:
+        print(i)
+```
 # Результат
 # Вывод
 
