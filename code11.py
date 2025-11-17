@@ -50,3 +50,36 @@ if __name__ == "__main__":
     counter = countdown(5)
     for i in counter:
         print(i)
+
+
+
+
+def fibonacci(n):
+    a, b = 1, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+
+fib_gen = fibonacci(208)
+result = None
+for num in fib_gen:
+    result = num
+
+print(f"208-ым числом Фибоначчи является число {result}")
+
+
+def fibonacci(n):
+    a, b = 1, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+
+fib_gen = fibonacci(208)
+result = None
+
+with open("fibonacci.txt", "w") as file:
+    for num in fib_gen:
+        file.write(f"{num}\n")
+        result = num
+
+print(f"208-ым числом Фибоначчи является число {result}")
